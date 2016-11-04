@@ -260,26 +260,74 @@ void show_input(int input,int x,int y) {
 	draw_input_circles(dig2,x+100,y);
 	draw_input_circles(dig1,x+150,y);
 }
+/*bool correct_input(int input) {
+	bool correct = true;
+	int digits = 0;
+	while (input > 0) {
+		digits++;
+		if (input % 10 > 6 || input % 10 < 1) {
+			correct = false;
+			break;
+		}
+		input /= 10;
+	}
+	if (digits > 4) {
+		correct = false;
+	}
+	return correct;
+}*/
+bool EndGame(int position) {
+	bool endgame = false;
+	if (position == 4)
+		endgame = true;
+	return endgame;
+}
 int main() {
 	int wid = ALL_WINDOWS;
-	int i = 0;
+	int input = 0;
 	int j = 45;
 	int random_number = 0;
+	bool end = false;
 	initwindow(500, 600, "MASTER MIND");
-	setbkcolor(CYAN);
+	setlinestyle(SOLID_LINE, 1, 2);
+	setbkcolor(BROWN);
 	clearviewport();
+	line(300, 0, 300, 600);
 	random_number=genarate_random_number();
+	printf("Welcome To Master Mind!\n\nI have chosen a number. It Has 4 Digits and it is in range of[1111,6666].\n");
 	for ( j = 45; j <545; j+=50)
 	{
 		int y = random_number;
-		scanf("%d", &i);
+		printf("Guess my number:");
+		scanf("%d", &input);
 		printf("%d\n", y);
-		show_input(i, 45, j);
-		int position = correct_position(&y, &i);
-		int color = correct_colors(&y, &i);
-		show_result(position, color, 345, j-20);
-	
-
+		show_input(input, 45, j);
+		int position = correct_position(&y, &input);
+		int color = correct_colors(&y, &input);
+		printf("You guessed %d positions correctly!\nYou guessed %d colors correctly!\n\n", position, color);
+		show_result(position, color, 345, j);
+		if (EndGame(position)) {
+			setcolor(BLACK);
+			setlinestyle(SOLID_LINE, 2, 10);
+			settextstyle(BOLD_FONT, HORIZ_DIR, 20);
+			outtextxy(305, j+45, "You Won The Game");
+			printf("You Won The Game!\n");
+			end = true;
+			break;
+		}
+		
+	}
+	if (!end) {
+		printf("You Loss The Game!\n");
+		show_input(random_number, 45, 545);
+		setcolor(BLACK);
+		setlinestyle(SOLID_LINE, 2, 10);
+		settextstyle(BOLD_FONT, HORIZ_DIR, 20);
+		outtextxy(355,525, "My Colors");
+		setcolor(BLACK);
+		setlinestyle(SOLID_LINE, 2, 10);
+		settextstyle(BOLD_FONT, HORIZ_DIR, 20);
+		outtextxy(355, 545, "You Loss");
 	}
 	while (!kbhit())
 	{
