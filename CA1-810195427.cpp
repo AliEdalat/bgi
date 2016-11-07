@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "graphics.h"
 #include <stdlib.h>
 #include <time.h>
@@ -9,9 +10,11 @@ int correct_position(int* random_number, int *input);
 int genarate_random_number(void);
 void draw_circles(char input, int x, int y);
 bool correct_input(int input);
-void win_interface();
+void win_interface(void);
 void loss_interface(int random_number);
-void Game_background();
+void Game_background(void);
+
+int set_input(void);
 
 int genarate_random_number(void) {
 	int i = 0;
@@ -260,6 +263,10 @@ void show_input(int input,int FirstCircleInLine_x,int FirstCircleInLine_y) {
 bool correct_input(int input) {
 	bool correct = true;
 	int digits = 0;
+	if (input < 0) {
+		correct = false;
+		return correct;
+	}
 	while (input > 0) {
 		digits++;
 		if (input % 10 > 6 || input % 10 < 1) {
@@ -273,7 +280,7 @@ bool correct_input(int input) {
 	}
 	return correct;
 }
-void win_interface() {
+void win_interface(void) {
 	cleardevice();
 	setcolor(BLACK);
 	outtextxy(200, 250, "You Won The Game");
@@ -287,12 +294,22 @@ void loss_interface(int random_number) {
 	outtextxy(200, 90, "You Loss");
 
 }
-void Game_background() {
+void Game_background(void) {
 	initwindow(500, 600, "Master Mind");
 	setlinestyle(SOLID_LINE, 1, 2);
 	setbkcolor(DARKGRAY);
 	clearviewport();
 	line(300, 0, 300, 600);
+}
+int set_input(void) {
+	int input = 0;
+	scanf("%d", &input);
+	while (!correct_input(input)) {
+		printf("your input is not correct!\nGuess my number: ");
+		scanf("%d", &input);
+
+	}
+	return input;
 }
 int main() {
 	int wid = ALL_WINDOWS;
@@ -311,14 +328,9 @@ int main() {
 	{
 		int My_number = random_number;
 		printf("Guess my number:");
-		scanf("%d", &input);
+		input = set_input();
 		
-		while (!correct_input(input)) {
-			printf("your input is not correct!\nGuess my number: ");
-			scanf("%d", &input);
-		
-		}
-		
+		/*in this part i show user input and calculate correct colors and correct positions .i comminucate with user with print sth */
 		printf("%d\n", My_number);
 		show_input(input, 45, j);
 		position = correct_position(&My_number, &input);
